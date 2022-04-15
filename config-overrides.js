@@ -1,5 +1,7 @@
 const { ModuleFederationPlugin } = require('webpack').container;
 
+const packageJsonDeps = require('./package.json').dependencies;
+
 module.exports = function override(config, env) {
   if (!config.plugins) {
     config.plugins = [];
@@ -15,8 +17,16 @@ module.exports = function override(config, env) {
       exposes: [],
       shared: {
         grapesjs: { singleton: true },
-        react: { singleton: true, eager: true }, //, requiredVersion: packageJsonDeps.react },
-        'react-dom': { singleton: true, eager: true }, //, requiredVersion: packageJsonDeps["react-dom"] }
+        react: {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps.react,
+        },
+        'react-dom': {
+          singleton: true,
+          eager: true,
+          requiredVersion: packageJsonDeps['react-dom'],
+        },
       },
     })
   );
