@@ -10,7 +10,7 @@ env:
   Branches: main,integration,feature/**
   MainBranch: main
   NPMRegistry: https://registry.npmjs.org/
-  InstallCommand: npm ci
+  InstallCommand: npm i
   BuildCommand: npm run build
   Output: ./build
 
