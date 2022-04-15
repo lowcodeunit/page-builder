@@ -1,0 +1,15 @@
+name: GitHub Artifacts - Release - React
+
+on:
+  push:
+    branches: [main,integration,feature/**]
+  pull_request:
+    branches: [main,integration,feature/**]
+
+env:
+  Branches: main,integration,feature/**
+  MainBranch: main
+  NPMRegistry: 
+  InstallCommand: 
+  BuildCommand: 
+  Output: 
