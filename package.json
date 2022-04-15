@@ -28,6 +28,8 @@
   "scripts": {
     "start": "cross-env PORT=4200 react-app-rewired start",
     "build": "react-app-rewired build",
+    "deploy": "npm version patch && npm run deploy:app",
+    "deploy:app": "npm version patch --prefix public && npm run build && npm publish ./build --access public",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
