@@ -36,7 +36,7 @@ class App extends React.Component {
         (editor) =>
           exporter(editor, {
             btnLabel: 'Export to Fathym',
-            sendToUrl: `/api/lowcodeunit/deploy/${}/zip`,
+            sendToUrl: `/api/lowcodeunit/deploy/${appLookup}/zip`,
           }),
       ],
     });
