@@ -14,20 +14,21 @@ class App extends React.Component {
     this.winAny = window;
   }
 
-  public componentDidMount() {
+  public async componentDidMount() {
     let queries = queryString.parse(window.location.search);
 
-    let appLookup = queries.appLookup || this.winAny.LCU?.State?.ApplicationLookup;
+    let appLookup =
+      queries.appLookup || this.winAny.LCU?.State?.ApplicationLookup;
 
+    let appFilesResp = await fetch(`/api/lowcodeunit/download/${appLookup}/files/content`);
+
+    let appFiles = await appFilesResp.json();
+
+    debugger;
     grapesjs.init({
       container: '#gjs',
-      // plugins: [webpage, exporter],
-      // pluginOptions: {
-      //   [exporter]: {
-      //     btnLabel: 'Export to Fathym',
-      //     sendToUrl: '/api/lowcodeunit/deploy/the-app-lookup/zip'
-      //   }
-      // },
+      components: appFiles.Model['index.html'] || '', 
+      style: appFiles.Model['css/style.css'] || '',
       plugins: [
         (editor) =>
           webpage(editor, {
