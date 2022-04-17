@@ -41,7 +41,7 @@ class App extends React.Component {
           }),
       ],
       storageManager: {
-        id: `gjs-${appLookup}`,             // Prefix identifier that will be used on parameters
+        id: `gjs-${appLookup}`, // Prefix identifier that will be used on parameters
         type: 'local',          // Type of the storage
         autosave: true,         // Store data automatically
         autoload: true,         // Autoload stored data on init
