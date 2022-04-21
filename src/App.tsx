@@ -1,55 +1,79 @@
 import React from 'react';
-import './App.css';
-import grapesjs from 'grapesjs';
-import webpage from 'grapesjs-preset-webpage';
-import exporter from '@fathym-it/grapesjs-plugin-export';
 import queryString from 'query-string';
+import grapesjs from 'grapesjs';
+import basicBlocksPlugin from 'grapesjs-blocks-basic';
+import flexBlocksPlugin from 'grapesjs-blocks-flexbox';
+import navbarPlugin from 'grapesjs-navbar';
+import ckeditorPlugin from 'grapesjs-plugin-ckeditor';
+import formsPlugin from 'grapesjs-plugin-forms';
+import gradientStyle from 'grapesjs-style-gradient';
+import bgStyle from 'grapesjs-style-bg';
+import countdownPlugin from 'grapesjs-component-countdown';
+import postCssParser from 'grapesjs-parser-postcss';
+import customCodePlugin from 'grapesjs-custom-code';
+import tabsPlugin from 'grapesjs-tabs';
+import tooltipPlugin from 'grapesjs-tooltip';
+import touchPlugin from 'grapesjs-touch';
+import tUIImageEditorPlugin from 'grapesjs-tui-image-editor';
+import typedPlugin from 'grapesjs-typed';
+import exporter from 'grapesjs-plugin-export';
+import { PageBuilderConfig } from './Models/PageBuilderConfig';
+import './App.css';
 
 class App extends React.Component {
-  private winAny: any;
+  //  Fields
+  protected plugins: ((editor: any) => any)[];
+
+  protected winAny: any;
+
+  //  Properties
+  public Config: PageBuilderConfig;
 
   constructor(props: any) {
     super(props);
 
     this.winAny = window;
+
+    this.plugins = [];
+
+    this.Config = {
+      ...new PageBuilderConfig(),
+      ...(this.winAny?.LCU?.State || {}),
+    };
   }
 
+  //  API Methods
   public async componentDidMount() {
-    let queries = queryString.parse(window.location.search);
+    let appLookup = this.loadAppLookup();
 
-    let appLookup =
-      queries.appLookup || this.winAny.LCU?.State?.ApplicationLookup;
+    let appFiles = await this.loadAppFiles(appLookup);
 
-    let appFilesResp = await fetch(
-      `/api/lowcodeunit/download/${appLookup}/files/content`
-    );
+    this.registerDefaultPlugins();
 
-    let appFiles = await appFilesResp.json();
-
-    let grapesInit = {
-      components: appFiles.Model['index.html'] || '',
-      style: appFiles.Model['css/style.css'] || '',
-      plugins: [
-        (editor) =>
-          webpage(editor, {
-            exportOpts: false,
-            ...(this.winAny?.LCU?.State?.webpage || {}),
-          }),
-        (editor) =>
-          exporter(editor, {
-            btnLabel: 'Export to Fathym',
-            sendToUrl: `/api/lowcodeunit/deploy/${appLookup}/zip`,
-            ...(this.winAny?.LCU?.State?.exporter || {}),
-          }),
-      ],
+    let grapesInit: any = {
       storageManager: {
-        id: `gjs-${appLookup}`, // Prefix identifier that will be used on parameters
-        type: 'local', // Type of the storage
-        autosave: true, // Store data automatically
-        autoload: true, // Autoload stored data on init
-        stepsBeforeSave: 1, // If autosave enabled, indicates how many changes are necessary before store method is triggered
+        id: `gjs-${appLookup}`,
+        type: 'local',
+        autosave: true,
+        autoload: true,
+        stepsBeforeSave: 1,
       },
-      ...(this.winAny?.LCU?.State || {}),
+      ...this.Config,
+      components: appFiles.Model ? appFiles.Model['index.html'] : null,
+      style: appFiles.Model ? appFiles.Model['css/style.css'] : null,
+    };
+
+    grapesInit = {
+      ...grapesInit,
+
+      //  Ensure that components and styles are loaded from remote first, config second
+      components: grapesInit.components || this.Config.components || '',
+      style: grapesInit.style || this.Config.style || '',
+
+      //  Register the plugins
+      plugins: this.plugins,
+
+      //  Force container to the correct container
       container: `#gjs-${appLookup}`,
     };
 
@@ -57,16 +81,80 @@ class App extends React.Component {
   }
 
   public render() {
-    let queries = queryString.parse(window.location.search);
-
-    let appLookup =
-      queries.appLookup || this.winAny.LCU?.State?.ApplicationLookup;
+    let appLookup = this.loadAppLookup();
 
     return (
       <div>
         <div id={`gjs-${appLookup}`}></div>
       </div>
     );
+  }
+
+  //  Helpers
+  protected async loadAppFiles(
+    appLookup: string
+  ): Promise<{ Model: { [file: string]: string } }> {
+    let appFilesResp = await fetch(
+      `/api/lowcodeunit/download/${appLookup}/files/content`
+    );
+
+    let b = await appFilesResp.blob();
+
+    let t = await b.text();
+
+    let appFiles = t.startsWith('<') ? {} : await appFilesResp.json();
+
+    return appFiles;
+  }
+
+  protected loadAppLookup() {
+    let queries = queryString.parse(window.location.search);
+
+    let appLookup =
+      queries.appLookup || this.winAny.LCU?.State?.ApplicationLookup;
+
+    return appLookup;
+  }
+
+  protected registerDefaultPlugins() {
+    this.registerPlugin(this.Config?.BGOptions, bgStyle);
+
+    this.registerPlugin(this.Config?.BlocksBasicOptions, basicBlocksPlugin);
+
+    this.registerPlugin(this.Config?.CKEditorOptions, ckeditorPlugin);
+
+    this.registerPlugin(this.Config?.CountdownOptions, countdownPlugin);
+
+    this.registerPlugin(this.Config?.CustomCodeOptions, customCodePlugin);
+
+    this.registerPlugin(this.Config?.FlexBoxOptions, flexBlocksPlugin);
+
+    this.registerPlugin(this.Config?.FormsOptions, formsPlugin);
+
+    this.registerPlugin(this.Config?.GradientStyle, gradientStyle);
+
+    this.registerPlugin(this.Config?.NavbarOptions, navbarPlugin);
+
+    this.registerPlugin(this.Config?.PostCSSParserOptions, postCssParser);
+
+    this.registerPlugin(this.Config?.TabsOptions, tabsPlugin);
+
+    this.registerPlugin(this.Config?.TooltipOptions, tooltipPlugin);
+
+    this.registerPlugin(this.Config?.TouchOptions, touchPlugin);
+
+    this.registerPlugin(
+      this.Config?.TUIImageEditorOptions,
+      tUIImageEditorPlugin
+    );
+
+    this.registerPlugin(this.Config?.TypedOptions, typedPlugin);
+  }
+
+  protected registerPlugin(check: boolean, plugin: any, opts: {} = {}): void {
+    if (check) {
+      this.plugins.push((editor) => plugin(editor, opts));
+    }
   }
 }
 
