@@ -1,4 +1,3 @@
-
 export class PageBuilderConfig {
   [prop: string]: any;
 
@@ -20,6 +19,14 @@ export class PageBuilderConfig {
   /**
    * Documentation on available options can be found here: https://github.com/artf/grapesjs-component-countdown
    */
+  public Initial?: {
+    Components: any;
+    Style: any;
+  };
+
+  /**
+   * Documentation on available options can be found here: https://github.com/artf/grapesjs-component-countdown
+   */
   public CountdownOptions?: any;
 
   /**
@@ -30,12 +37,12 @@ export class PageBuilderConfig {
   /**
    * Documentation on available options can be found here: https://github.com/artf/grapesjs-plugin-export
    */
-   public ExportOptions?: any;
+  public ExportOptions?: any;
 
   /**
    * Documentation on available options can be found here: https://github.com/artf/grapesjs-blocks-flexbox
    */
-   public FlexBoxOptions?: any;
+  public FlexBoxOptions?: any;
 
   /**
    * Documentation on available options can be found here: https://github.com/artf/grapesjs-plugin-forms
@@ -53,9 +60,14 @@ export class PageBuilderConfig {
   public NavbarOptions?: any;
 
   /**
+   * Documentation on available options can be found here: https://github.com/fathym-it/page-builder-powerbi
+   */
+   public PageBuilderPowerBI?: any;
+
+  /**
    * Documentation on available options can be found here: https://github.com/artf/grapesjs-parser-postcss
    */
-  public PostCSSParserOptions?: any;
+   public PostCSSParserOptions?: any;
 
   /**
    * Documentation on available options can be found here: https://github.com/artf/grapesjs-tabs
@@ -89,6 +101,7 @@ export class PageBuilderConfig {
 
     //  TODO:  Why not working?
     // this.CKEditorOptions = {};
+
     this.CountdownOptions = {};
 
     this.CustomCodeOptions = {};
@@ -102,6 +115,8 @@ export class PageBuilderConfig {
     this.GradientStyle = {};
 
     this.NavbarOptions = {};
+
+    this.PageBuilderPowerBI = {};
 
     this.PostCSSParserOptions = {};
 
@@ -127,6 +142,7 @@ export class PageBuilderConfig {
     //   //   'submenu.activeIcon.path': '../icon-c.svg',
     //   // },
     // };
+    
     this.TypedOptions = {};
   }
 }

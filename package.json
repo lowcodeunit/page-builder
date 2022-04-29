@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@fathym-it/grapesjs-plugin-export": "^0.0.18",
+    "@fathym-it/page-builder-powerbi": "^0.0.4",
     "ckeditor": "^4.12.1",
     "cross-env": "^7.0.3",
     "grapesjs": "^0.16.45",

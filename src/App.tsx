@@ -5,6 +5,8 @@ import basicBlocksPlugin from 'grapesjs-blocks-basic';
 import flexBlocksPlugin from 'grapesjs-blocks-flexbox';
 import navbarPlugin from 'grapesjs-navbar';
 import ckeditorPlugin from 'grapesjs-plugin-ckeditor';
+import exporterPlugin from 'grapesjs-plugin-export';
+// import fathymExporterPlugin from '@fathym-it/grapesjs-plugin-export';
 import formsPlugin from 'grapesjs-plugin-forms';
 import gradientStyle from 'grapesjs-style-gradient';
 import bgStyle from 'grapesjs-style-bg';
@@ -16,7 +18,7 @@ import tooltipPlugin from 'grapesjs-tooltip';
 import touchPlugin from 'grapesjs-touch';
 import tUIImageEditorPlugin from 'grapesjs-tui-image-editor';
 import typedPlugin from 'grapesjs-typed';
-import exporter from 'grapesjs-plugin-export';
+import pageBuilderPowerBi from '@fathym-it/page-builder-powerbi';
 import { PageBuilderConfig } from './Models/PageBuilderConfig';
 import './App.css';
 
@@ -67,8 +69,8 @@ class App extends React.Component {
       ...grapesInit,
 
       //  Ensure that components and styles are loaded from remote first, config second
-      components: grapesInit.components || this.Config.components || '',
-      style: grapesInit.style || this.Config.style || '',
+      components: grapesInit.components || this.Config.Initial?.Components || '',
+      style: grapesInit.style || this.Config.Initial?.Style || '',
 
       //  Register the plugins
       plugins: this.plugins,
@@ -127,6 +129,8 @@ class App extends React.Component {
 
     this.registerPlugin(this.Config?.CustomCodeOptions, customCodePlugin);
 
+    this.registerPlugin(this.Config?.ExportOptions, exporterPlugin);
+
     this.registerPlugin(this.Config?.FlexBoxOptions, flexBlocksPlugin);
 
     this.registerPlugin(this.Config?.FormsOptions, formsPlugin);
@@ -134,6 +138,8 @@ class App extends React.Component {
     this.registerPlugin(this.Config?.GradientStyle, gradientStyle);
 
     this.registerPlugin(this.Config?.NavbarOptions, navbarPlugin);
+
+    this.registerPlugin(this.Config?.PageBuilderPowerBI, pageBuilderPowerBi)
 
     this.registerPlugin(this.Config?.PostCSSParserOptions, postCssParser);
 
