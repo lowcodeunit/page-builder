@@ -1,17 +1,17 @@
-name: { { Name } }
+name: GitHub Artifacts - Release - React
 
 on:
   push:
-    branches: [{ { Branches } }]
+    branches: [main,integration,feature/**]
   pull_request:
-    branches: [{ { Branches } }]
+    branches: [main,integration,feature/**]
 
 permissions: write-all
 
 env:
-  Branches: { { Branches } }
-  MainBranch: { { MainBranch } }
-  NPMRegistry: { { NPMRegistry } }
-  InstallCommand: { { InstallCommand } }
-  BuildCommand: { { BuildCommand } }
-  Output: { { Output } }
+  Branches: main,integration,feature/**
+  MainBranch: main
+  NPMRegistry: 
+  InstallCommand: 
+  BuildCommand: 
+  Output: 
