@@ -100,11 +100,11 @@ class App extends React.Component {
       `/api/lowcodeunit/download/${appLookup}/files/content`
     );
 
-    let b = await appFilesResp.blob();
+    let fileBlob = await appFilesResp.blob();
 
-    let t = await b.text();
+    let fileText = await fileBlob.text();
 
-    let appFiles = t.startsWith('<') ? {} : await appFilesResp.json();
+    let appFiles = fileText.startsWith('<') ? {} : JSON.parse(fileText);
 
     return appFiles;
   }
