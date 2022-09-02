@@ -5,8 +5,7 @@ import basicBlocksPlugin from 'grapesjs-blocks-basic';
 import flexBlocksPlugin from 'grapesjs-blocks-flexbox';
 import navbarPlugin from 'grapesjs-navbar';
 import ckeditorPlugin from 'grapesjs-plugin-ckeditor';
-import exporterPlugin from 'grapesjs-plugin-export';
-// import fathymExporterPlugin from '@fathym-it/grapesjs-plugin-export';
+import fathymExporterPlugin from '@fathym-it/grapesjs-plugin-export';
 import formsPlugin from 'grapesjs-plugin-forms';
 import gradientStyle from 'grapesjs-style-gradient';
 import bgStyle from 'grapesjs-style-bg';
@@ -46,6 +45,7 @@ class App extends React.Component {
 
   //  API Methods
   public async componentDidMount() {
+
     let appLookup = this.loadAppLookup();
 
     let appFiles = await this.loadAppFiles(appLookup);
@@ -60,6 +60,8 @@ class App extends React.Component {
         autoload: true,
         stepsBeforeSave: 1,
       },
+      height: '100vh',
+      width: '100vw',
       ...this.Config,
       components: appFiles.Model ? appFiles.Model['index.html'] : null,
       style: appFiles.Model ? appFiles.Model['css/style.css'] : null,
@@ -73,14 +75,27 @@ class App extends React.Component {
       style: grapesInit.style || this.Config.Initial?.Style || '',
 
       //  Register the plugins
-      plugins: this.plugins,
+      
+      plugins: [
+        (editor) =>
+        fathymExporterPlugin(editor, {
+            btnLabel: 'Export to Fathym',
+            sendToUrl: `/api/lowcodeunit/deploy/${appLookup}/zip`,
+          }), ...this.plugins],
 
       //  Force container to the correct container
       container: `#gjs-${appLookup}`,
+
+
     };
 
-    grapesjs.init(grapesInit);
+    const editor = grapesjs.init(grapesInit);
+    editor.Panels.addButton('options', [{ id: 'save', className: 'fa fa-floppy-o icon-blank', command: function(e){ return e.store() }, attributes: { title: 'Save Template' } },]);
+
+
   }
+
+
 
   public render() {
     let appLookup = this.loadAppLookup();
@@ -129,8 +144,6 @@ class App extends React.Component {
 
     this.registerPlugin(this.Config?.CustomCodeOptions, customCodePlugin);
 
-    this.registerPlugin(this.Config?.ExportOptions, exporterPlugin);
-
     this.registerPlugin(this.Config?.FlexBoxOptions, flexBlocksPlugin);
 
     this.registerPlugin(this.Config?.FormsOptions, formsPlugin);
@@ -163,26 +176,5 @@ class App extends React.Component {
     }
   }
 }
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
 
 export default App;
