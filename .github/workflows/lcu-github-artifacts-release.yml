@@ -5,6 +5,7 @@ on:
     branches: [main,integration,feature/**]
   pull_request:
     branches: [main,integration,feature/**]
+  workflow_dispatch:
 
 permissions: write-all
 
